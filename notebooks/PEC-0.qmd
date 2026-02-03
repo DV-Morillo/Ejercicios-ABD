@@ -1,0 +1,315 @@
+---
+title:  "Análisis Bayesiano de Datos: PEC 0"
+author: "Daniel Morillo"
+format:
+  html:
+    code-copy:       true
+    code-tools:      true
+    embed-resources: true
+    theme:           ../www/extra-styles.scss
+    toc:             true
+    toc-location:    left
+callout-appearance:  minimal
+---
+
+# Introducción
+
+Esta Prueba de Evaluación Continua (PEC 0) es una introducción al uso de algunas herramientas de ciencia de datos que será necesario usar para entregar satisfactoriamente las PEC de la asignatura "Análisis Bayesiano de Datos".
+
+Concretamente, al realizar esta PEC vas a aprender las siguientes habilidades:
+
+-   Usar (muy básicamente) el [sistema git](https://git-scm.com/) de control de versiones.
+
+-   Crear y utilizar [proyectos en Rstudio](https://docs.posit.co/ide/user/ide/guide/code/projects.html).
+
+-   Crear y utilizar un entorno reproducible en R mediante el paquete [{renv}](https://rstudio.github.io/renv/index.html)
+
+-   Escribir ["código literario"](https://es.wikipedia.org/wiki/Programaci%C3%B3n_literaria) en R, usando cuadernos o "notebooks" en [formato Quarto](https://quarto.org/), como este mismo.
+
+```{r setup}
+#| message: false
+
+# Paquetes:
+library(tidyverse)
+
+# Inicialización del entorno:
+set.seed(20260203) # Asegurar la "reproducibilidad" de las simulaciones
+```
+
+## Pasos para completar la actividad
+
+1.  El primer paso, si no lo has hecho ya, es visualizar el [vídeo explicativo de esta PEC](!--%20#%20TODO:%20Link%20al%20video%20--) y seguir las instrucciones del mismo.
+
+2.  Una vez lo hayas completado, puedes volver a este notebook y completar los ejercicios.
+
+3.  Después de haberlos completado, pulsa el botón "Render" que hay en la parte superior del editor de texto para convertir el notebook en un documento en formato "html".
+
+4.  Por último, ve al buzón de la PEC en Ágora y entrega la PEC subiendo el documento "PEC-0.html".
+
+## Cómo responder a los ejercicios
+
+Este notebook consiste principalmente en texto natural en [formato markdown](https://www.markdownguide.org/basic-syntax), con [bloques de código en R intercalados](https://quarto.org/docs/computations/r.html#code-blocks).
+
+La PEC consiste en cuatro ejercicios, cada uno de ellos con una o más "preguntas".
+Este será el formato que encontrarás en las PEC posteriores del curso, con uno o más ejercicios cada una.
+
+Cada una de las preguntas consiste en:
+
+-   Un encabezado de "nivel 3" (lo reconocerás por las tres "almohadillas" al inicio de la línea, e.g., `###`), indicando el número de pregunta.
+-   Un "enunciado de la pregunta", explicando qué se debe responder en la misma.
+-   Un ["callout"](https://quarto.org/docs/authoring/callouts.html), donde deberás completar tu respuesta.
+
+Los "callouts" tienen el siguiente formato:
+
+::: {#respuesta-N .callout-note}
+:::
+
+Es decir, consiste en dos delimitadores ("fences"), indicando el comienzo y final del "callout", respectivamente.
+El "fence" de inicio contiene un "código" que sirve para identificar que se trata de un "callout", y una "etiqueta" (`#respuesta-N`).
+En cada caso, `N` vendrá sustituido por el nº de respuesta que corresponde a cada pregunta, es decir `#respuesta-1` para la pregunta 1, etc.
+
+Tu tarea en esta PEC consiste en **responder a las preguntas dentro del "callout"**.
+Para ello, debes dar tu respuesta insertando líneas entre los "fences".
+Por ejemplo, supón la sigueinte "pregunta 12":
+
+``` md
+## Pregunta 12
+
+-   ¿Qué distribución tiene "forma de campana"?
+```
+
+si tu respuesta fuese "La distribución normal.", el "callout" `#respuesta-12` debe tener la siguiente forma:
+
+``` md
+::: {#respuesta-12 .callout-note}
+La distribución normal.
+:::
+```
+
+::: {.callout-caution appearance="default"}
+### Importante:
+
+Los "delimitadores" formados por tres "acentos inversos" se utilizan únicamente para "enmarcar" código markdown (`md`) y ponerlo como ejemplo.
+Tu respuesta sólo debe incluir los delimitadores ":::" (como en este mismo "callout").
+:::
+
+Los "callout" pueden tener líneas vacías al inicio y/o al final.
+Por ejemplo,
+
+``` md
+::: {#respuesta-12 .callout-note}
+
+La distribución normal.
+
+:::
+```
+
+también es una respuesta válida.
+
+### Respuestas no válidas
+
+A continuación tienes una serie de ejemplos de respuestas que no serían válidas.
+
+-   Indicador de "clase" del "callout" o etiqueta faltantes:
+
+``` md
+::: {#respuesta-12}
+La distribución normal.
+:::
+```
+
+``` md
+::: {.callout-note}
+La distribución normal.
+:::
+```
+
+-   Salto de línea al comienzo o al final del "callout" faltantes:
+
+``` md
+::: {#respuesta-12 .callout-note}
+La distribución normal. :::
+```
+
+``` md
+::: {#respuesta-12 .callout-note} La distribución normal.
+:::
+```
+
+-   "Fence" de cierre (o de apertura) faltante:
+
+``` md
+::: {#respuesta-12 .callout-note}
+La distribución normal.
+```
+
+``` md
+La distribución normal.
+:::
+```
+
+-   "Callout" faltante (ambos "fences"):
+
+``` md
+La distribución normal.
+```
+
+### Tipos de respuesta
+
+En cada pregunta se te pedirán (uno o más) diferentes tipos de respuesta.
+Los tipos de respuesta que debes utilizar son:
+
+-   [Texto natural en markdown](https://www.markdownguide.org/basic-syntax).
+
+-   [Código en R](https://quarto.org/docs/computations/r.html#code-blocks).
+
+-   [Expresiones matemáticas en LaTeX](https://latex-tutorial.com/tutorials/amsmath).
+
+Familiarízate con su formato, antes de responder a los ejercicios, para asegurarte de que respondes adecuadamente a lo que se pide.
+
+Date cuenta de que, cuando introduzcas código en R o expresiones en LaTeX, tienes que usar "delimitadores especiales".
+Estos delimitadores **forman parte de la respuesta**, y por tanto **deben ir dentro de los "fences" del "callout"**.
+
+# Ejercicio 1
+
+## Quarto y markdown
+
+[Quarto](https://quarto.org/) es un "sistema de publicación" que permite generar documentos en gran variedad de formatos, partiendo de markdown y código en R (y otros lenguajes de programación).
+
+A lo largo de este mismo notebook, estás viendo en qué consiste el formato markdown.
+Visita la página de [sintáxis básica de markdown](https://quarto.org/docs/authoring/markdown-basics.html) en el sitio web de Quarto para familiarizarte mejor con el formarto.
+
+El siguiente bloque de código representa la "función de densidad de una variable aleatoria con distribución normal".
+
+```{r normal-figura}
+tibble(
+  variable = seq(from = -3, to = 3, by = .1),
+  densidad = variable |> dnorm()
+) |>
+  ggplot(mapping = aes(x = variable, y = densidad)) +
+  geom_line()
+```
+
+Para ver el resultado, pulsa el botón "Render" en la parte superior del editor de texto.
+Esto ejecutará el código en R de este bloque y generará el documento "PEC-0.html", incluyendo tanto el código como la gráfica resultante de ejecutarlo.
+El documento se abrirá automáticamente en tu navegador; si no es el caso, búscalo en tus archivos de Windows (o en la pestaña "Files" de Rstudio) y ábrelo haciendo doble click o click.
+
+## Práctica
+
+### Pregunta 1
+
+-   Explica, en tus propias palabras, qué hace el código del bloque "normal-figura". Presta especial atención a las funciones utilizadas, y a los valores de los parámetros de la llamada a `seq()`. Utiliza en tu código al menos [texto en negrita, texto en cursiva, y texto "formateado como código"](https://quarto.org/docs/authoring/markdown-basics.html#text-formatting).
+
+::: {#respuesta-1 .callout-note}
+:::
+
+# Ejercicio 2
+
+## Bloques de código
+
+Para incluir código en R en un notebook de Quarto, es necesario incluir los "delimitadores" que has visto en el ejercicio 1.
+Por ejemplo:
+
+```{r bloque-ejemplo}
+1:5
+```
+
+Fíjate que, además de los tres acentos inversos, que indican que se trata de código, el delimitador va seguido por `{r bloque-ejemplo}`.
+Las "llaves" (`{}`) indican que se trata de código ejecutable, `r` indica que es código en R y que debe ser ejecutado por el "intérprete de R", y `bloque-ejemplo` es una etiqueta que nos permite identificar el bloque de código (no es necesaria, pero es buena práctica añadirla).
+Al indicar de esta manera que se trata de código en R ejecutable, Quarto "ejecuta" ese código, incluyendo en la salida tanto el bloque de código como su resultado en el documento generado.
+
+Pulsa el botón "Render" ahora para ver el resultado.
+Si incluimos el código en R sin delimitadores, Quarto asumirá que se trata de markdown y no ejecutará nada ni lo formateará como un "bloque de código":
+
+1:5
+
+Para insertar un bloque de código, puedes hacerlo desde el menú "Code" en Rstudio, pulsando en "Insert Chunk" en el desplegable.
+Alternativamente, puedes hacerlo con el atajo de teclas `CTRL + ALT + I`.
+(Cuando cojas soltura, es recomendable usar el atajo de teclado.)
+
+En este caso, recuerda que tienes que incluir este bloque dentro de tu respuesta, e.g.:
+
+::: {#respuesta-N .callout-note}
+```{r respuesta-n-ejemplo}
+6:10
+```
+
+(Texto adicional en markdown...)
+:::
+
+## Práctica
+
+### Pregunta 2 {#pregunta-2}
+
+-   Utilizando la función de R `rnorm()`, simula 3 observaciones de una variable $x$ que se distribuya según la distribución normal estandarizada, y muéstralos. Introduce el código en un bloque etiquetado como `simula-normal`. Explica, en la propia respuesta, en qué consiste la llamada.
+
+::: {#respuesta-2 .callout-note}
+:::
+
+# Ejercicio 3
+
+## Código en línea
+
+El código en R también puede insertarse dentro del propio texto en markdown.
+Esto es muy útil para reportar valores.
+Por ejemplo:
+
+```{r media}
+valores <- c(3, 5, 7)
+media   <- valores |> mean()
+n_vals  <- valores |> length()
+```
+
+*La media de los `{r} n_vals` valores es igual a `{r} media`.*
+
+A este tipo de código se le llama "código en linea" o "inline".
+Es buena práctica reporta calcular cada valor a reportar en un bloque de código y guardarlo en un objeto, en lugar de introducir mucho código en línea.
+
+Por ejemplo, lo anterior puede hacerse también como sigue:
+
+*La media de los `{r} valores |> length()` valores es igual a `{r} valores |> mean()`.*
+
+Sin embargo, esta forma es mucho menos legible.
+
+## Práctica
+
+### Pregunta 3 {#pregunta-3}
+
+-   Crea un objecto llamado `rand_max` con el mayor de los tres valores de tu respuesta a la [pregunta 2](#pregunta-2), y repórtalo mediante "código en línea".
+
+::: {#respuesta-3 .callout-note}
+:::
+
+# Ejercicio 4
+
+## Expresiones matemáticas en LaTeX
+
+Quarto puede reconocer y "renderizar" [expresiones matemáticas en LaTeX](https://latex-tutorial.com/tutorials/amsmath).
+En su salida, las expresiones son representadas con notación matemática.
+Por ejemplo, el siguiente código
+
+$$
+x \sim N(0, 1)
+$$
+
+representa una expresión indicando que "la variable aleatoria $x$ se distribuye según la distribución normal estándar".
+Renderiza el notebook ahora para ver la expresión generada en la salida en notación matemática.
+
+También podemos introducir las expresiones "en línea", por ejemplo: *La media de la variable aleatoria* $x$ *se representa con* $\mu_x$.
+Fíjate que, al ejecutarse el código en R del notebook *antes* de generar la salida en html, podemos incluso insertar valores calculados en las expresiones matemáticas:
+
+*La media de las `{r} n_vals` puntuaciones es igual a* $\mu_x = `{r} media`$.
+
+### Pregunta 4
+
+-   Representa la expresión de un modelo de regresión lineal simple, usando $y$ como variable criterio y $x$ como variable predictora. Usa la letra griega "beta" para los coeficientes de regresión (subíndices 0 y 1 para la intersección y pendiente, respectivamente) y "epsilon" para el término error.
+
+::: {#respuesta-4 .callout-note}
+:::
+
+### Pregunta 5
+
+-   Reporta el valor `rand_max` que obtuviste en la [pregunta 3](#pregunta-3), mediante una expresión en línea dentro de una frase de texto natural en markdown, indicando que corresponde al valor mayor de $x$, utilizando "max" como subíndice.
+
+::: {#respuesta-5 .callout-note}
+:::

@@ -44,7 +44,7 @@ set.seed(20260203) # Asegurar la "reproducibilidad" de las simulaciones
 
 3.  Después de haberlos completado, pulsa el botón "Render" que hay en la parte superior del editor de texto para convertir el notebook en un documento en formato "html".
 
-4.  Por último, ve al buzón de la PEC en Ágora y entrega la PEC subiendo el documento "PEC-0.html".
+4.  Por último, navega al [buzón de la PEC en Ágora](https://agora.uned.es/mod/assign/view.php?id=770392) y entrega la PEC subiendo el documento "PEC-0.html".
 
 ## Cómo responder a los ejercicios
 

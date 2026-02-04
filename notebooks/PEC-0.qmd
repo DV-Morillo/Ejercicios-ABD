@@ -38,7 +38,7 @@ set.seed(20260203) # Asegurar la "reproducibilidad" de las simulaciones
 
 ## Pasos para completar la actividad
 
-1.  El primer paso, si no lo has hecho ya, es visualizar el [vídeo explicativo de esta PEC](!--%20#%20TODO:%20Link%20al%20video%20--) y seguir las instrucciones del mismo.
+1.  El primer paso, si no lo has hecho ya, es visualizar el [vídeo explicativo de esta PEC](https://unedo365.sharepoint.com/:v:/r/sites/AnlisisBayesianodeDatos_0okqgr/Documentos%20compartidos/Discusi%C3%B3n%20general/PEC-0_Instrucciones.mkv?csf=1&web=1&e=Iqhuxd) y seguir las instrucciones del mismo.
 
 2.  Una vez lo hayas completado, puedes volver a este notebook y completar los ejercicios.
 

@@ -1,0 +1,304 @@
+---
+title: "PEC 5: El método de Monte Carlo"
+format:
+  html:
+    code-copy:       true
+    code-tools:      true
+    df-print:        paged
+    embed-resources: true
+    toc:             true
+    toc-location:    left
+bibliography:        ../www/abd.bib
+csl:                 ../www/apa-old-doi-prefix.csl
+callout-appearance:  minimal
+---
+
+# Introducción
+
+En este tema hemos estudiado el método de Monte Carlo (MC).
+Ahora vamos a ponerlo en práctica, comparando sus resultados con lo que ya conocemos de temas anteriores.
+En esta ocasión, la entrega consiste en un ejercicio sobre el modelo normal-normal, y otro sobre el modelo Poisson-Gamma.
+
+Al igual que en el Tema 3, configuramos primero el entorno.
+
+```{r setup}
+#| message: false
+
+# Paquetes:
+library(tidyverse)
+library(RColorBrewer)
+library(scales)
+
+
+# Inicialización del entorno:
+set.seed(20260310) # Asegura la "reproducibilidad" de las simulaciones
+
+
+# Configuración de la salida gráfica:
+
+PALETA <- brewer.pal(8, "Set2") # Colores por defecto
+color_defecto  <- PALETA[1]
+options(ggplot2.discrete.colour = PALETA)
+
+theme_set(theme_minimal()) # Tema "neutro" para la representación gráfica
+
+# Formatea los números reales (5 dígitos "significativos"):
+options(digits              = 5L)
+options(knitr.digits.signif = TRUE)
+```
+
+# Ejercicio 1: Modelo normal-normal {#ejercicio-1}
+
+## Ajuste de modelos
+
+En este ejercicio vamos a utilizar nuevamente el modelo normal-normal del [Ejercicio 4 del Tema 3](https://github.com/DV-Morillo/Ejercicios-ABD/blob/main/notebooks/PEC-3.qmd#L418).
+
+Aquí tienes nuevamente los datos:
+
+```{r normal-normal-muestras}
+# Tiempo (en segundos) para leer un texto estándar en una prueba de lectura de
+#   las 2 clases de 1º de ESO en un colegio:
+clase_1 <- tibble(
+  id     = 1:27,
+  tiempo = c(
+    242, 249, 278, 273, 227, 257, 276, 236, 214, 141, 200, 201, 
+    228, 271, 160, 275, 156, 246, 293, 306, 263, 247, 224, 160, 277, 
+    168, 250
+  )
+)
+
+clase_2 <- tibble(
+  id     = 1:24,
+  tiempo = c(
+    195, 176, 237, 258, 226, 254, 292, 212, 215, 298, 235, 244, 
+    144, 227, 166, 194, 261, 187, 224, 233, 180, 167, 193, 282
+  )
+)
+```
+
+Los datos de la distribución previa eran los datos de la población.
+Recuerda:
+
+```{r normal-normal-previa-params}
+MU_PREVIA     <- 247
+SIGMA2_PREVIA <-  34^2
+```
+
+Aplicando la propiedad de conjugación, recuerda que podemos obtener la expresión analítica de la distribución posterior de la media:
+
+$$
+p(\mu | y) = N(\mu_{post}, \sigma^2_{post}),
+$$
+
+siendo
+
+$$
+\mu_{post} = \frac{\sigma^2_y \mu_{pre} + n \sigma^2_{pre} \bar{y}}
+                   {\sigma^2_y + n \sigma^2_{pre}}
+$$
+
+y
+
+$$
+\sigma^2_{post} = \frac{\sigma^2_y \sigma^2_{pre}}
+                        {\sigma^2_y + n \sigma^2_{pre}}
+$$
+
+### Pregunta 1
+
+-   Utilizando la expresión analítica del modelo, obtén mediante código en R la expresión de la distribución posterior de la media para cada una de las dos clases.
+
+::: {#respuesta-1 .callout-note}
+:::
+
+## Simulación de Monte Carlo
+
+Para cada familia de distribuciones de probabilidad existe en R la función `r*()` que permite simular valores de esa distribución.
+Por ejemplo, en el caso de la normal, `rnorm(10, mean = 0, sd = 1)` extrae una muestra de 10 observaciones "independientes e igualmente distribuidas" de una distribución normal estándar.
+
+### Pregunta 2
+
+-   Para cada una de las dos clases, extrae 500 muestras de la distribución posterior.
+
+::: {#respuesta-2 .callout-note}
+:::
+
+## Inferencia con la media de la distribución posterior
+
+### Pregunta 3
+
+-   Con las distribuciones simuladas de la pregunta anterior, estima la media y la varianza de cada distribución. Compara los resultados con los obtenidos en la Pregunta 1.
+
+::: {#respuesta-3 .callout-note}
+:::
+
+## Tamaño muestral y error estándar de Monte Carlo
+
+### Pregunta 4
+
+-   Calcula el error estándar MC de las medias estimadas por el método MC [@hoff2009, p. 56], y su intervalo al 95% de confianza (p. 57). Asume que las varianzas verdaderas son desconocidas (i.e., utiliza las varianzas obtenidas por el método MC). ¿Cuál es la amplitud de los intervalos? Comprueba si los valores reales (obtenidos analíticamente) están comprendidos en los intervalos.
+
+::: {#respuesta-4 .callout-note}
+:::
+
+### Pregunta 5
+
+-   En base a las varianzas obtenidas por el método de Monte Carlo, determina el tamaño muestral de la distribución posterior necesario para alcanzar una precisión de 2 decimales en la estimación de la media de las distribuciones posteriores con un 95% de probabilidad [@hoff2009, p. 56 ---vas a tener que "despejar" el tamaño de la muestra simulada]. Utiliza el valor mayor de ambas distribuciones para volver a calcular las medias, y comprueba si se alcanza la precisión esperada.
+
+::: {#respuesta-5 .callout-note}
+:::
+
+## Inferencia de intervalos y probabilidades
+
+### Pregunta 6
+
+-   Utilizando las distribuciones posteriores de las media, obtenidas en la Pregunta 5 con alta precisión, calcula:
+
+    -   Los intervalos centrales de credibilidad de las medias al 99%.
+
+    -   Los cuartiles de las distribuciones posteriores.
+
+    -   La probabilidad de cada clase de tener una media menor a la de la población.
+
+    Obtén los resultados analíticos con las funciones `qnorm()` y `pnorm()`, y compara ambos.
+
+::: {#respuesta-6 .callout-note}
+:::
+
+## Reflexión sobre el método de Monte Carlo
+
+### Pregunta 7
+
+-   ¿Qué opinas del método de Monte Carlo? ¿Te resulta fácil o difícil de aplicar? ¿Qué consideras que aporta respecto de obtener los parámetros de los modelos aplicando las fórmulas analíticas?
+
+::: {#respuesta-7 .callout-note}
+:::
+
+## Inferencia con funciones derivadas
+
+### Pregunta 8
+
+-   Calcula la probabilidad de que la media de la segunda clase sea superior a la media de la primera clase usando el método de Monte Carlo. ¿Cómo lo harías usando la fórmula analítica? ¿Es más fácil o más difícil?
+
+::: {#respuesta-8 .callout-note}
+:::
+
+### Pregunta 9
+
+-   Las muestras obtenidas para distribución posterior de la media de cada una de las dos clases son independientes. Por lo tanto, debería dar igual en qué orden se hayan muestreado. Utilizando `sample(_vector_)` podemos obtener los valores aleatorizado del vector en un objeto `_vector_`. Comprueba si se cumple que podemos aleatorizar las muestras de una (o ambas) distribuciones posteriores y que, a pesar de ello, la probabilidad de que media de la segunda clase sea superior a la media de la primera clase no cambia.
+
+::: {#respuesta-9 .callout-note}
+:::
+
+## Estimador máximo posterior
+
+El estimador máximo posterior (MAP) de la media es, simplemente, la moda de la distribución posterior.
+Es decir, el valor de la media para el que la densidad de la distribución posterior es máxima.
+
+Con la expresión cerrada de la distribución posterior normal, sabemos que la moda coincide con el valor central o media.
+Con cualquier otra expresión cerrada, podemos utilizar un algoritmo de optimización para encontrar ese máximo.
+
+Cuando no conocemos la expresión cerrada, sin embargo, necesitaremos utilizar el método de Monte Carlo (veremos cómo en un tema posterior).
+No obstante, obtener la moda a partir de una muestra es algo más complicado que simplemente "resumir" las muestras de la distribución posterior.
+
+Una forma de hacerlo es utilizando un histograma.
+Sin embargo, esto es algo "rudimentario", ya que no está claro qué ancho deben tener las bandas.
+La forma idónea es obteniendo la densidad mediante un algoritmo de "suavizado".
+
+Vamos a ver un ejemplo con una distribución normal estándar.
+Sabemos que el algoritmo debería devolver el valor "0", que se corresponde con el máximo de esta distribución.
+
+```{r map-mc-normal-estandar}
+S_MC <- 50000L # Tamaño muestral para la simulación de la distribuión.
+
+muestras_norm <- rnorm(S_MC) # Simulamos las muestras de la distribución
+
+densidad_norm <- density(muestras_norm) # `density()` aplica el "suavizado"
+
+# Convertimos la densidad en un "tibble" para manejarla más fácilmente 
+densidad_normal <- tibble(
+  x        = densidad_norm$x, # `x` == variable aleatoria
+  densidad = densidad_norm$y
+)
+
+# Podemos representar la densidad gráficamente, junto con la curva normal:
+densidad_normal |>
+  mutate(dens_analitica = dnorm(x)) |>
+  ggplot(aes(x, densidad)) +
+  geom_line(color = color_defecto) +
+  geom_line(aes(y = dens_analitica), color = PALETA[2])
+
+# Obtenemos el valor de la moda:
+estimador_map <- densidad_normal |> slice(which.max(densidad))
+densidad_max  <- estimador_map |> pull(densidad)
+moda          <- estimador_map |> pull(x)
+```
+
+El estimador MAP es `{r} moda`, siendo su densidad `{r} densidad_max`.
+Está *próxima a 0* (teniendo en cuenta que estamos muestreando de una distribución con varianza 1).
+
+Sin embargo, el algoritmo de suavizado introduce error adicional.
+Como sabemos que la moda es igual a la media, podemos obtener su error MC y compararlo con la estimación de la moda.
+
+```{r error-map-vs-error-mc}
+CONFIANZA <- .95 # Consideramos un intrevalo "relativamente amplio"
+alpha     <- (1 - CONFIANZA) / 2
+z_norm_ic <- qnorm(alpha, lower.tail = FALSE)
+
+# La distribución es normal estándar, luego usamos una varianza de 1:
+sqrt(1 / S_MC) * z_norm_ic
+```
+
+Vemos que el estimador MAP se desvía unas 6 veces más que el intervalo de confianza al 95% del error MC, es decir, es un orden de magnitud superior, aproximadamente.
+En general, con el mismo número de muestras MC obtendremos menor precisión en el estimador MAP que en el EAP.
+
+### Pregunta 10
+
+-   Utilizando las muestras posteriores obtenidas en la pregunta 5, calcula los estimadores MAP para las dos clases, y compáralos con los que obtendrías con las fómulas analíticas.
+
+::: {#respuesta-10 .callout-note}
+:::
+
+# Ejercicio 2: Inferencias con la distribución posterior
+
+## Modelo Gamma-Poisson
+
+En el texto de @hoff2009 se utiliza una distribución Gamma en un ejemplo comparando el nº de hijos de mujeres de 40 años con y sin título universitario, obtenido de la Encuesta Social General de los EEUU durante los años 1990 [puedes consultar los detalles en el capítulo 3 de @hoff2009].
+Las distribuciones posteriores del nº de hijos promedio de cada grupo son (p. .53):
+
+$$
+p(\theta_{sin} | y) = gamma(\theta_{sin}, 219, 112)
+$$
+
+$$
+p(\theta_{con} | y) = gamma(\theta_{con}, 68, 45)
+$$
+
+La distribución Gamma está implementada en R mediante la familia de funciones `*gamma()`: `rgamma()`, `dgamma()`, `pgamma()`, y `qgamma()`.
+
+### Pregunta 11
+
+-   Utilizando un eje horizontal con precisión de .002, representa las dos distribuciones utilizando su aproximación discreta. Determina los límites del eje horizontal según tu propio criterio. Sin ver la forma de la función de densidad, ¿podrías deducir cuál podría ser alguno de los dos límites del intervalo?
+
+::: {#respuesta-11 .callout-note}
+:::
+
+### Pregunta 12
+
+-   Utilizando el método MC, obtén los estimadores EAP y MAP del nº de hijos promedio de las mujeres con y sin título universitario en EEUU en los años 90. Utiliza una precisión de 1 decimal al 99% de confianza para la media de las distribuciones, usando el mismo tamaño muestral MC para ambas distribuciones y justificándolo. Compara los resultados con los valores obtenidos aplicando la fórmula analítica.
+
+::: {.callout-tip appearance="default"}
+Si lo necesitas, revisa el [material complementario del Tema 2](https://agora.uned.es/mod/resource/view.php?id=691432) para determinar la varianza de la distribución Gamma.
+:::
+
+::: {#respuesta-12 .callout-note}
+:::
+
+### Pregunta 13
+
+-   Utilizando el método MC de la pregunta anterior, determina la probabilidad de que las mujeres de 40 años sin ningún título universitario en los 90 en EEUU tuvieran un nº de hijos promedio mayor al de las mujeres con título universitario. Utiliza una precisión para la media de 1 decimal al 99% de confianza, justificando el tamaño muestral elegido para aproximar las distribuciones posteriores. Dado este resultado, ¿qué concluirías?
+
+::: {#respuesta-13 .callout-note}
+:::
+
+# Referencias

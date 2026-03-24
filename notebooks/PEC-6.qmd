@@ -1,0 +1,398 @@
+---
+title: "PEC 6: Predicción"
+lang:  es
+format:
+  html:
+    code-copy:       true
+    code-tools:      true
+    df-print:        paged
+    embed-resources: true
+    toc:             true
+    toc-location:    left
+bibliography:        ../www/abd.bib
+csl:                 ../www/apa-old-doi-prefix.csl
+callout-appearance:  minimal
+---
+
+# Introducción
+
+En este tema estudiamos el concepto de **distribución predictiva** y cómo se puede estimar de manera sencilla mediante el método de Monte Carlo.
+
+::: {.callout-important appearance="default"}
+Habrás observado que @ross2022 asume distribuciones discretas (y no siempre uniformes) para el parámetro de probabilidad **en los ejemplos 7.1 a 7.4**.
+Esto es perfectamente válido (la distribución previa no tiene que ser una distribución Beta necesariamente), siempre y cuando *la distribución esté adecuadamente elegida para representar la creencia o conocimientos previo* de el/la investigador/a.
+
+No obstante, fíjate en dos cuestiones importantes:
+
+-   Al ser discretas, esas distribuciones previas **limitan los posibles valores que puede tener la distribución posterior** (e.g., en el ejemplo 7.1 toda la "masa de probabilidad" se encontrará en los valores 0.1, 0.3, 0.5, 0.7, 0.9).
+
+-   Aunque la distribución de la variable observada sea binomial, la distribuión previa no pertenece a la familia Beta.
+    Por lo tanto, no se aplica la propiedad de conjugación y la distribución posterior tampoco pertenecerá a la familia Beta.
+    Esto hace que **no se trate de modelos beta-binomiales**.
+:::
+
+También hemos visto:
+
+-   Cómo realizar comprobaciones con la **distribución predictiva posterior** (lo que llamamos **comprobaciones predictivas posteriores**, posterior predictive checks, o PPCs).
+
+-   Cómo calcular **valores-p predictivos posteriores** para hacer inferencias y evaluar la discrepancia entre los datos observados y la distribución predictiva.
+
+-   Cómo usar la **distribución predictiva previa** para evaluar la adecuación de la distribución previa a los datos observados.
+
+En estos ejercicios, vamos a poner en práctica estos conceptos con algunos modelos ya conocidos.
+En este caso, vamos a utilizar los modelos beta-binomial y gamma-Poisson estudiados en los temas anteriores.
+
+```{r setup}
+#| message: false
+
+# Paquetes:
+library(tidyverse)
+library(RColorBrewer)
+library(scales)
+
+
+# Configuración de la salida gráfica:
+
+PALETA <- brewer.pal(8, "Set2") # Colores por defecto
+color_defecto <- PALETA[1]      # Color por defecto
+options(ggplot2.discrete.colour = PALETA)
+
+theme_set(theme_minimal()) # Tema "neutro" para la representación gráfica
+
+# Redondea los números reales "inline":
+options(digits = 3L)                
+options(knitr.digits.signif = FALSE)
+
+# Inicializa la semilla aleatoria:
+set.seed(20260317)
+```
+
+Inicializamos el entorno a la manera habitual.
+Además, dado que vamos a utilizar el método de Monte Carlo, **inicializamos la semilla aleatoria para asegurar la reproducibilidad de los resultados**.
+
+# Ejercicio 1: Modelo beta-binomial de la "tasa de aceptación"
+
+## Distribución predictiva previa
+
+Vamos a empezar utilizando el ejemplo ya familiar que introdujimos en el Tema 3.
+
+Recuerda que se trata de un modelo beta-binomial en el que el parámetro $\theta$ representa la "tasa de aceptación" de los/as usuarios/as que han probado un app, a los que les pregunta "si la descargarían en su móvil".
+
+Los datos que se han obtenido en las dos muestras de la investigación son:
+
+```{r beta-binomial-muestra}
+aceptacion_muestra_1 <- tibble(
+  id_participante   = 1:22,
+  resp_descarga_app = c(
+    "Si", "Si", "No", "No", "Si", "Si", "Si", "Si", "No", "Si", "Si",
+    "Si", "Si", "Si", "Si", "Si", "No", "Si", "No", "Si", "Si", "Si"
+  )
+)
+
+aceptacion_muestra_2 <- tibble(
+  id_participante   = 1:113,
+  resp_descarga_app = c(
+    "Si", "Si", "No", "No", "Si", "Si", "Si", "Si", "No", "Si", "Si",
+    "Si", "Si", "Si", "Si", "Si", "No", "Si", "No", "Si", "Si", "Si", 
+    "No", "Si", "Si", "Si", "Si", "No", "No", "Si", "No", "Si", "Si", 
+    "Si", "Si", "Si", "No", "Si", "No", "No", "Si", "No", "Si", "Si", 
+    "No", "No", "No", "Si", "No", "No", "Si", "Si", "No", "No", "Si", 
+    "No", "Si", "No", "No", "No", "Si", "Si", "No", "Si", "Si", "No", 
+    "Si", "Si", "No", "Si", "Si", "No", "Si", "No", "Si", "No", "Si", 
+    "No", "No", "No", "Si", "Si", "No", "No", "Si", "Si", "No", "No", 
+    "No", "Si", "Si", "No", "Si", "Si", "No", "Si", "Si", "Si", "Si", 
+    "No", "Si", "No", "No", "No", "No", "No", "Si", "No", "No", "Si", 
+    "Si", "Si", "Si"
+  )
+)
+```
+
+Como en temas anteriores, vamos a utilizar una distribución no informativa para representar nuestra creencia a priori sobre la tasa de aceptación.
+
+### Pregunta 1
+
+-   Aproxima la distribución previa de $\theta$ por el método de Monte Carlo de manera que el valor esperado tenga una precisión de 2 decimales al 99% de probabilidad. Comprueba que la media y varianza se aproximan a los valores teóricos y representa la distribución resultante.
+
+::: {#respuesta-1 .callout-note}
+:::
+
+### Pregunta 2
+
+-   A partir de la distribución previa simulada de $\theta$, simula los resultados de pruebas binomiales para la primera muestra del estudio. Representa la distribución predictiva previa resultante e interprétala.
+
+::: {.callout-important appearance="default"}
+Ten en cuenta que la distribución predictiva previa debe tener el tamaño muestral correspondiente a la primera muestra.
+:::
+
+::: {#respuesta-2 .callout-note}
+:::
+
+### Pregunta 3
+
+-   Utilizando la distribución predictiva previa de la pregunta anterior, calcula en qué centil se encuentra la primera muestra empírica del estudio de aceptación. ¿Cuál es la probabilidad de obtener un valor igual, igual o mayor, o igual o menor que este?
+
+::: {#respuesta-3 .callout-note}
+:::
+
+## Distribución predictiva posterior
+
+### Pregunta 4
+
+-   Utilizando la propiedad de la conjugación y el mismo nº de muestras de Monte Carlo de la distribución previa, aproxima la distribución posterior de $\theta$ y represéntala.
+
+::: {#respuesta-4 .callout-note}
+:::
+
+### Pregunta 5
+
+-   A partir de la distribución posterior simulada de $\theta$, simula y representa los resultados de pruebas binomiales para la primera muestra del estudio.
+
+::: {#respuesta-5 .callout-note}
+:::
+
+Lo que acabas de representar es la **distribución predictiva posterior** del modelo ajustado con la muestra 1 del estudio.
+
+### Pregunta 6
+
+-   Obten y representa las distribuciones posterior y predictiva posterior con la muestra 2, **asumiendo que partimos de un desconocimiento total sobre la tasa de aceptación**.
+
+::: {#respuesta-6 .callout-note}
+:::
+
+## Comprobaciones predictivas posteriores
+
+### Pregunta 7
+
+-   Dada la distribución posterior tras el ajuste del modelo con la muestra 2, aproxima la distribución predictiva posterior **para el tamaño muestral de la muestra 1**. Represéntala junto con la distribución predictiva posterior resultante de ajustar el modelo con la muestra 1, y representa mediante una línea vertical el valor obtenido de la muestra empírica 1.
+
+::: {#respuesta-7 .callout-note}
+:::
+
+### Pregunta 8
+
+-   En el modelo ajustado con la muestra 2, calcula la probabilidad de obtener un "número de participantes que sí aceptan la app" mayor o igual / menor o igual que el de la primera muestra empírica. ¿Cómo se representan estas probabilidades en el gráfico anterior?
+
+::: {#respuesta-8 .callout-note}
+:::
+
+### Pregunta 9
+
+-   Si te preguntasen por el *valor-*$p$ *predictivo posterior* de la hipótesis "la muestra 1 está extraída de una población con tasa de aceptación mayor o igual que la estimada con la muestra 2", ¿qué valor reportarías y cómo lo interpretarías?
+
+::: {#respuesta-9 .callout-note}
+:::
+
+### Pregunta 10
+
+-   Prueba a hacerlo a la inversa; es decir, ajusta el modelo con la muestra 1, y después realiza la *comprobación predictiva posterior* de si la muestra 2 proviene de la misma población que la muestra 1 (teniendo en cuenta el sentido, a partir de la representación). ¿Qué conclusión obtendrías?
+
+::: {#respuesta-10 .callout-note}
+:::
+
+# Ejercicio 2: Modelo gamma-Poisson de nº de hijos en la Encuesta Social General
+
+El ejercicio anterior se basa en la distribución beta-binomial, que permite simplificar la distribución predictiva posterior al necesitar generar únicamente un valor observado (nº de usuarios que "aceptan" la aplicación) para cada muestra usando la función `rbinom()`.
+Sin embargo, es habitual encontrar distribuciones predictivas posteriores más complejas, como hemos visto en la lectura.
+En el siguiente ejemplo veremos cómo se pueden simular muestras de una distribución predictiva posterior utilizando el modelo "gamma-Poisson".
+
+## Distribuciones posterior y predictiva posterior
+
+En [la lectura del Tema 5](https://agora.uned.es/mod/resource/view.php?id=691449) [@hoff2009] y los ejercicios vimos el ejemplo del nº de hijos de mujeres de 40 años con y sin título universitario, con datos de la Encuesta Social General de los EEUU durante la década de los 1990 [los detalles están en @hoff2009, pp. 62-63].
+
+A continuación tienes los datos que aparecen en la lectura, los estadísticos resumen para cada grupo, y una representación gráfica:
+
+```{r muestra-gss-1990}
+muestra_gss_1990 <- tibble(
+  titulo_uni = c("sin" |> rep(7),                 "con" |> rep(5)),
+  n_hijos    = c(0:6,                             0:4),
+  frecuencia = c(20L, 19L, 38L, 20L, 10L, 2L, 2L, 11L, 11L, 13L, 7L, 2L)
+) |>
+  # Rellena los niveles para hacer ambas muestras más "comparables":
+  complete(titulo_uni, n_hijos, fill = list(frecuencia = 0))
+
+gss_1990_estadisticos <- muestra_gss_1990 |>
+  group_by(titulo_uni) |>
+  summarize(y = sum(n_hijos * frecuencia), n = sum(frecuencia))
+
+gss_1990_estadisticos # y = nº hijos en cada grupo, n = nº mujeres en cada grupo
+```
+
+::: {#fig-muestra-gss-1990}
+```{r muestra-gss-1990-figura}
+muestra_gss_1990 |>
+  ggplot(aes(x = n_hijos, y = frecuencia, fill = titulo_uni)) +
+  geom_col(position = position_dodge(preserve = "single")) +
+  labs(fill = "Título universitario", x  = "Nº de hijos", y = "Frecuencia")
+```
+:::
+
+La distribución posterior del nº de hijos $\lambda$ en el modelo gamma-Poisson puede obtenerse mediante conjugación de la distribución previa $\lambda \sim Gamma(a, b)$ [@hoff2009, p. 61], y viene dada por $\lambda \sim Gamma(a + \sum y_i, b + n)$, siendo $\sum y_i$ el nº total de ocurrencias observadas en una muestra (en nuestro caso, nº total de hijos en la muestra / cada grupo) y $n$ el nº total de casos (nº de mujeres en la muestra / en cada grupo).
+
+Como vimos en los ejercicios del tema 5, las distribuciones posteriores para cada grupo, asumiendo una distribución previa $\lambda \sim Gamma(2, 1)$, vienen dadas por:
+
+```{r n-hijos-ajuste}
+A_PRE <- 2L
+B_PRE <- 1L
+
+params_gss_1990 <- gss_1990_estadisticos |> mutate(
+  a_post = A_PRE + y,
+  b_post = B_PRE + n
+)
+
+params_gss_1990_sin <- params_gss_1990 |> filter(titulo_uni == "sin") 
+a_post_sin <- params_gss_1990_sin |> pull(a_post)
+b_post_sin <- params_gss_1990_sin |> pull(b_post)
+
+params_gss_1990_con <- params_gss_1990 |> filter(titulo_uni == "con") 
+a_post_con <- params_gss_1990_con |> pull(a_post)
+b_post_con <- params_gss_1990_con |> pull(b_post)
+```
+
+$$
+  (\lambda | y_{sin}) \sim Gamma(`{r} a_post_sin`, `{r} b_post_sin`)
+$$
+
+$$
+  (\lambda | y_{con}) \sim Gamma(`{r} a_post_con`, `{r} b_post_con`)
+$$
+
+### Pregunta 11 {#pregunta-11}
+
+-   Utilizando $10^6$ muestras simuladas, aproxima las dos distribuciones posteriores y represéntalas.
+
+::: {.callout-tip appearance="default"}
+Para representar una densidad directamente con `ggplot()` a partir de las muestras de simuladas, consulta la ayuda de `geom_density()`.
+:::
+
+::: {#respuesta-11 .callout-note}
+:::
+
+### Pregunta 12 {#pregunta-12}
+
+-   A partir de las distribuciones posteriores de $\lambda$, aproxima las distribuciones predictivas posteriores simulando datos de la distribución de Poisson. Representa las distribuciones predictivas posteriores de ambos grupos.
+
+::: {.callout-tip appearance="default"}
+Consulta la ayuda de `rpois()` si necesitas saber cómo simular una distribución de Poisson.
+:::
+
+::: {#respuesta-12 .callout-note}
+:::
+
+### Pregunta 13 {#pregunta-13}
+
+-   Usando sólo la muestra de mujeres tituladas universitarias, representa la *proporción de casos* en cada valor de "nº hijos" junto con su distribución predictiva posterior.
+
+::: {#respuesta-13 .callout-note}
+:::
+
+## Comprobaciones predictivas posteriores
+
+Para hacer comprobaciones predictivas, no basta con aproximar una muestra predictiva posterior.
+Como has podido ver en la lectura, necesitamos obtener estimadores de dicha distribución con los que poder comparar estadísticos de la distribución muestral.
+
+Para ello, en lugar de aproximar la distribución predictiva posterior mediante muestras de Monte Carlo, lo que necesitamos es obtener la distribución predictiva posterior del estadístico con el que queremos comparar la muestra empírica.
+Es decir, necesitamos generar "muestras empíricas simuladas", calcular ese mismo estadístico, y compararlo con el estadístico de la muestra empírica.
+
+A continuación vamos a hacer eso mismo con las distribuciones predictivas posteriores de los dos grupos de la población estudiada
+
+### Pregunta 14 {#pregunta-14}
+
+-   Observa la distribución de casos observados en la muestra y la pronosticada en función del número de hijos. ¿Qué discrepancias se observan? Concretamente: ¿cuánto es en cada caso el máximo nº de hijos?
+
+::: {#respuesta-14 .callout-note}
+:::
+
+### Pregunta 15
+
+-   Escribe una función llamada `max_poisson()` que, dado un valor de $\lambda$ y un tamaño muestral $n$, simule **muestras de tamaño** $n$ de una distribución de Poisson y devuelva **un único número que sea el valor máximo** de dicha distribución. Ayúdate del prototipo de función que hay dentro del "callout".
+
+::: {#respuesta-15 .callout-note}
+```{r max-poisson}
+max_poisson <- function(lambda, n) { # ATENCIÓN: No borres el prototipo!
+  
+  # TODO: Completa a continuación el cuerpo de la función:
+}
+```
+:::
+
+### Pregunta 16
+
+```{r n-muestra-con}
+# Tamaño muestral de mujeres con titulación universitaria (usado a continuación)
+n_con <- gss_1990_estadisticos |> filter(titulo_uni == "con") |> pull(n)
+```
+
+-   Utilizando la aproximación a la distribución posterior de la [pregunta 11](#pregunta-11) y la función `max_poisson()` que has escrito, determina el valor-$p$ predictivo posterior de obtener, según el modelo ajustado, una muestra de mujeres universitarias de tamaño `{r} n_con` en la que el máximo número de hijos sea igual o menor que el máximo empírico obtenido en la [pregunta 14](#pregunta-14), e interpreta el resultado.
+
+::: {.callout-warning appearance="default"}
+Probablemente tengas que "iterar" sobre los valores simulados de la distribución posterior.
+:::
+
+::: {#respuesta-16 .callout-note}
+:::
+
+### Pregunta 17
+
+-   En base a tus observaciones de las distribuciones predictivas posteriores, propón una comprobación predictiva posterior en alguna (o ambas) de las distribuciones en función de la titulación universitaria. Determina el valor-$p$ predictivo posterior correspondiente e interprétalo.
+
+::: {#respuesta-17 .callout-note}
+:::
+
+## Distribución predictiva posterior conjunta
+
+A continuación, vamos a intentar "generalizar" planteando un modelo más complejo, en el que tendremos en cuenta la muestra completa de mujeres.
+Empieza obteniendo las siguientes respuestas en base a las distribuciones predictivas posteriores anteriores.
+Más delante, necesitarás obtener una distribución prediciva posterior más compleja (bivariada), utilizando la muestra completa y teniendo en cuenta las dos variables conjuntamente (el nº de hijos, y el tener o no un título universitario).
+
+### Pregunta 18
+
+-   Supón que tomáramos dos mujeres al azar de la población de la encuesta, una con y otra sin titulación universitaria. ¿Cuál es la probabilidad de que la mujer con titulación universitaria tenga más hijos que la mujer sin titulación universitaria?
+
+::: {#respuesta-18 .callout-note}
+:::
+
+### Pregunta 19
+
+-   A partir de las aproximaciones a las distribuciones predictivas posteriores de los ejercicios anteriores, ¿podrías obtener la probabilidad conjunta de que una mujer no tenga ningún hijo y sea o no titulada universitaria? Justifica tu respuesta.
+
+::: {#respuesta-19 .callout-note}
+:::
+
+### Pregunta 20
+
+-   Supongamos que la muestra de mujeres con/sin título universitario es representativa de la población de mujeres de 40 años en los 90 en USA. Usando una distribución previa no informativa, utiliza un modelo beta-binomial para estimar la "tasa de tituladas universitarias" en dicha población, aproximándolo mediante una muestra de Monte Carlo de tamaño $10^6$. Representa la distribución posterior resultante.
+
+::: {#respuesta-20 .callout-note}
+:::
+
+### Pregunta 21
+
+-   En base a la distribución posterior de la "tasa de tituladas universitarias", obtén y representa la distribución predictiva posterior de mujeres que tienen o no título universitario en la población.
+
+::: {#respuesta-21 .callout-note}
+:::
+
+### Pregunta 22
+
+-   Partiendo de la distribución predictiva posterior de mujeres tituladas de la pregunta anterior, simula una distribución posterior del parámetro $\lambda$ (nº de hijos esperado) para cada observación, y una distribución predictiva posterior de nº de hijos. Representa ambas distribuciones (marginales).
+
+::: {#respuesta-22 .callout-note}
+:::
+
+### Pregunta 23
+
+-   A partir de las observaciones simuladas en las preguntas 15 a 17, representa la *distribución predictiva posterior conjunta* del nº de hijos y tener o no título universitario en las mujeres de la muestra. ¿En qué se parece y en qué se diferencia esta distribución conjunta a las dos distribuciones predictivas posteriores estimadas de manera independiente en la [pregunta 12](#pregunta-12)?
+
+::: {.callout-tip appearance="default"}
+Utiliza un diagrama de barras adosadas, parecido al de la representación gráfica de la mujesta en la @fig-muestra-gss-1990, para hacer la representación gráfica.
+:::
+
+::: {#respuesta-23 .callout-note}
+:::
+
+### Pregunta 24
+
+-   ¿Cuáles son las probabilidades de que una mujer (de 40 años en los 90 en USA) con 4 hijos o más sea o no titulada universitaria? ¿Cuál es la "odds" de que no sea titulada universitaria?
+
+::: {#respuesta-24 .callout-note}
+:::

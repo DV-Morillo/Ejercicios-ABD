@@ -46,6 +46,7 @@ library(scales)
 library(rstan)
 library(coda)
 library(mcmc)
+library(bayesplot)
 
 # Configuración de la salida gráfica:
 
@@ -236,6 +237,15 @@ El siguiente ejercicio NO está basado en la lectura; presta especial atención.
 -   Consulta la ayuda de la función `gelman.diag()` del paquete `{coda}`. Después, completa el siguiente chunk para calcular el estadístico $R$ (diagnóstico de Gelman-Rubin) para los valores de $\theta$ a partir de las dos cadenas de Markov que acabas de generar, e interprétalo.
 
 ::: {#respuesta-8 .callout-note}
+```{r calcular-diagnostico-GR}
+## TODO: Usando el objeto `theta_Gibbs`, completa el cálculo del estadístico $R$
+##       a continuación:
+
+theta_Gibbs <- list(
+  theta_Gibbs_1 = theta,
+  theta_Gibbs_2 = theta_2
+)
+```
 :::
 
 ### Pregunta 9
@@ -356,7 +366,6 @@ Consulta la [guía de usuario de Stan](https://mc-stan.org/docs/2_36/stan-users-
 
 # Configuración de Stan para mejorar la eficiencia:
 options(mc.cores = parallel::detectCores()) # Computación en paralelo
-rstan_options(auto_write = TRUE)            # Escribe el modelo compilado
 
 data(logit) # (Se puede borrar esta línea tras responder la pregunta 12)
 

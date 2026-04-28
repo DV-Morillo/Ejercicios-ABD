@@ -1,0 +1,55 @@
+---
+title: "PEC 8: Aplicaciones de la estadística Bayesiana"
+subtitle: # TODO: Añade el título de tu proyecto aquí
+author:   # TODO: Añade tu nombre aquí
+date:     # TODO: Añade la fecha de entrega aquí
+lang:  es
+format:
+  html:
+    code-copy:       true
+    code-tools:      true
+    df-print:        paged
+    embed-resources: true
+    toc:             true
+    toc-location:    left
+bibliography:        ../www/abd.bib
+csl:                 ../www/apa-old-doi-prefix.csl
+---
+
+# Introducción
+
+```{r setup}
+#| message: false
+#| warning: false
+
+# TODO: Añade a continuación los paquetes que necesites, a medida que los vayas
+#   utilizando
+
+# Paquetes:
+library(tidyverse)
+library(RColorBrewer)
+library(scales)
+
+# Configuración de la salida gráfica:
+
+PALETA <- brewer.pal(8L, "Set2") # Colores por defecto
+color_defecto <- PALETA[1L]      # Color por defecto
+options(ggplot2.discrete.colour = PALETA)
+
+theme_set(theme_minimal()) # Tema "neutro" para la representación gráfica
+
+# Redondea los números reales "inline":
+options(digits = 3L)
+options(knitr.digits.signif = FALSE)
+
+# Inicializa la semilla aleatoria:
+set.seed(20260427)
+```
+
+# Método
+
+# Resultados
+
+# Discusión
+
+# Referencias

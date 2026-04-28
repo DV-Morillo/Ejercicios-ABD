@@ -1,11 +1,11 @@
 ---
 title: "PEC 8: Aplicaciones de la estadística Bayesiana"
-subtitle: # TODO: Añade el título de tu proyecto aquí
-author:   # TODO: Añade tu nombre aquí
-date:     # TODO: Añade la fecha de entrega aquí
+subtitle: "" # TODO: Añade el título de tu proyecto aquí
+author:   "" # TODO: Añade tu nombre aquí
+date:     "" # TODO: Añade la fecha de entrega aquí
 lang:  es
 format:
-  html:
+  html: # TODO: Puedes hacer tu trabajo directamente como presentación, si quieres: https://quarto.org/docs/presentations/
     code-copy:       true
     code-tools:      true
     df-print:        paged
@@ -43,13 +43,45 @@ options(digits = 3L)
 options(knitr.digits.signif = FALSE)
 
 # Inicializa la semilla aleatoria:
-set.seed(20260427)
+set.seed(20260428)
 ```
+
+<!-- TODO: Explica brevemente en qué consiste el problema de investigación. -->
 
 # Método
 
+```{=html}
+<!-- TODO: Explica la metodología de tu proyecto, centrándote en la estimación Bayesiana
+
+Debes incluir y reportar:
+
+-  Cómo has elegido las distribuciones previas (incluyendo distribuciones predictivas previas, si procede).
+
+-  Algoritmo(s) utilizado(s) y su configuración (nº de cadenas, burn-in, thinning, etc., según proceda).
+
+-  Implementación de los mismos (paquete(s) utilizado(s))
+
+-  Al menos una aplicación (contraste de hipótesis, comprobación) de la distribución predictiva posterior.
+
+-  Toda la información necesaria para explicar cómo obtienes y reportas tus resultados.
+-->
+```
+
 # Resultados
 
-# Discusión
+```{=html}
+<!-- TODO: En tus resultados, incluye:
+
+- La evaluación de la aproximación Bayesiana (error MC, tamaño muestral efectivo, evaluación de convergencia, etc.).
+
+- Los estimadores posteriores (centrales, intervalos, representación de la distribución posterior, etc.).
+
+- Los resultados de la(s) aplicacion(es) de la distribución predictiva posterior.
+
+- Una evaluación crítica de la aplicación del método Bayesiano, sus ventajas, inconvenientes, dificultades, y posibles problemas encontrados.
+-->
+```
 
 # Referencias
+
+<!-- TODO: Asegúrate de incluir las entradas bibliográficas necesarias y referenciarlas adecuadamente, usando el archivo "www/abd.bib". -->

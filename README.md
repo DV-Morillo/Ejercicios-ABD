@@ -19,12 +19,12 @@ This project makes use of the [rproj-template](https://github.com/DaniMori/rproj
 
 Start by installing the following software components:
 
--   [R version 4.4.3](https://cran.rstudio.com/bin/windows/base/old/4.4.3/): In Windows, using the [binary installer](https://cran.rstudio.com/bin/windows/base/old/4.4.3/R-4.4.3-win.exe) is recommended.
+- [R version 4.5.2](https://cran.rstudio.com/bin/windows/base/old/4.5.2/): In Windows, using the [binary installer](https://cran.rstudio.com/bin/windows/base/old/4.5.2/R-4.5.2-win.exe) is recommended.
 
--   [Rstudio Desktop](https://posit.co/download/rstudio-desktop/): Although not strictly necessary, it is recommended to install the Rstudio IDE; for strict reproducibility, use build [2024.12.1+563 for Windows 10/11](https://download1.rstudio.org/electron/windows/RStudio-2024.12.1-563.exe).
+- [Rstudio Desktop](https://posit.co/download/rstudio-desktop/): Although not strictly necessary, it is recommended to install the Rstudio IDE; for strict reproducibility, use build [2024.12.1+563 for Windows 10/11](https://download1.rstudio.org/electron/windows/RStudio-2024.12.1-563.exe).
 
--   [Git client](https://git-scm.com/download): Install the Git client in order to be able to clone locally the project repository.
-    On Windows, use [the 64-bit Windows installer](https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/Git-2.48.1-64-bit.exe).
+- [Git client](https://git-scm.com/download): Install the Git client in order to be able to clone locally the project repository.
+  On Windows, use [the 64-bit Windows installer](https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/Git-2.48.1-64-bit.exe).
 
 ## Installing the project locally
 
